@@ -1,26 +1,26 @@
 use tonic::{transport::Server, Request, Response, Status};
 
-use hello_world::greeter_server::{Greeter, GreeterServer};
-use hello_world::{HelloReply, HelloRequest};
 
-pub mod hello_world {
-
+pub mod enclave {
     include!(concat!(env!("OUT_DIR"), concat!("/gen/enclave.v1.rs")));
 }
+
+use enclave::{ActualRequest, ActualResponse};
+use crate::enclave::enclave_unary_service_server::{EnclaveUnaryService, EnclaveUnaryServiceServer};
 
 #[derive(Debug, Default)]
 pub struct MyGreeter {}
 
 #[tonic::async_trait]
-impl Greeter for MyGreeter {
-    async fn say_hello(
+impl EnclaveUnaryService for MyGreeter {
+    async fn actual(
         &self,
-        request: Request<HelloRequest>, // Accept request of type HelloRequest
-    ) -> Result<Response<HelloReply>, Status> { // Return an instance of type HelloReply
+        request: Request<ActualRequest>,
+    ) -> Result<Response<ActualResponse>, Status> {
         println!("Got a request: {:?}", request);
 
-        let reply = hello_world::HelloReply {
-            message: format!("Hello {}!", request.into_inner().name).into(), // We must use .into_inner() as the fields of gRPC requests and responses are private
+        let reply = ActualResponse {
+            stuff: format!("Hello {}!", request.into_inner().name).into(),
         };
 
         Ok(Response::new(reply)) // Send back our formatted greeting
@@ -33,7 +33,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let greeter = MyGreeter::default();
 
     Server::builder()
-        .add_service(GreeterServer::new(greeter))
+        .add_service(EnclaveUnaryServiceServer::new(greeter))
         .serve(addr)
         .await?;
 

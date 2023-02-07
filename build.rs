@@ -3,7 +3,6 @@ use std::env;
 use std::env::current_dir;
 use std::fs::File;
 use std::io::Write;
-use std::path::PathBuf;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     dump_env_vars();
