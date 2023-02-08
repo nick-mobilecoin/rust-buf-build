@@ -1,5 +1,5 @@
 [package]
-name = "helloworld-tonic"
+name = "helloworld-grpcio"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,3 +12,4 @@ name = "helloworld-client"
 path = "src/client.rs"
 
 [dependencies]
+grpcio = "0.12.0"

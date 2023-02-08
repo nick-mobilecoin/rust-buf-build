@@ -1,21 +1,19 @@
-use hello_world::greeter_client::GreeterClient;
-use hello_world::HelloRequest;
+// Taken from the example at https://github.com/tikv/grpc-rs/tree/master/tests-and-examples/examples/hello_world
+// Copyright 2019 TiKV Project Authors. Licensed under Apache-2.0.
 
-pub mod hello_world {
-    tonic::include_proto!("helloworld");
-}
+use std::sync::Arc;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut client = GreeterClient::connect("http://[::1]:50051").await?;
+use grpcio::{ChannelBuilder, EnvBuilder};
+use grpcio_proto::example::helloworld::HelloRequest;
+use grpcio_proto::example::helloworld_grpc::GreeterClient;
 
-    let request = tonic::Request::new(HelloRequest {
-        name: "Tonic".into(),
-    });
+fn main() {
+    let env = Arc::new(EnvBuilder::new().build());
+    let ch = ChannelBuilder::new(env).connect("localhost:50051");
+    let client = GreeterClient::new(ch);
 
-    let response = client.say_hello(request).await?;
-
-    println!("RESPONSE={:?}", response);
-
-    Ok(())
+    let mut req = HelloRequest::default();
+    req.set_name("world".to_owned());
+    let reply = client.say_hello(&req).expect("rpc");
+    info!("Greeter received: {}", reply.get_message());
 }
