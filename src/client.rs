@@ -4,8 +4,16 @@
 use std::sync::Arc;
 
 use grpcio::{ChannelBuilder, EnvBuilder};
-use grpcio_proto::example::helloworld::HelloRequest;
-use grpcio_proto::example::helloworld_grpc::GreeterClient;
+// use grpcio_proto::example::helloworld::HelloRequest;
+// use grpcio_proto::example::helloworld_grpc::GreeterClient;
+use helloworld::HelloRequest;
+use helloworld_grpc::GreeterClient;
+pub mod helloworld {
+    include!(concat!(env!("OUT_DIR"), concat!("/gen/helloworld.rs")));
+}
+pub mod helloworld_grpc {
+    include!(concat!(env!("OUT_DIR"), concat!("/gen/helloworld_grpc.rs")));
+}
 
 fn main() {
     let env = Arc::new(EnvBuilder::new().build());

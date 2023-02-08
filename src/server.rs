@@ -12,8 +12,17 @@ use grpcio::{
     UnarySink,
 };
 
-use grpcio_proto::example::helloworld::{HelloReply, HelloRequest};
-use grpcio_proto::example::helloworld_grpc::{create_greeter, Greeter};
+// use grpcio_proto::example::helloworld::{HelloReply, HelloRequest};
+// use grpcio_proto::example::helloworld_grpc::{create_greeter, Greeter};
+use helloworld::{HelloReply, HelloRequest};
+use helloworld_grpc::{create_greeter, Greeter};
+
+pub mod helloworld {
+    include!(concat!(env!("OUT_DIR"), concat!("/gen/helloworld.rs")));
+}
+pub mod helloworld_grpc {
+    include!(concat!(env!("OUT_DIR"), concat!("/gen/helloworld_grpc.rs")));
+}
 
 #[derive(Clone)]
 struct GreeterService;
