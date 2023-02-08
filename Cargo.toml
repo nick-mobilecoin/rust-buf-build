@@ -12,4 +12,7 @@ name = "helloworld-client"
 path = "src/client.rs"
 
 [dependencies]
+futures-channel = "0.3.26"
+futures-executor = "0.3.26"
+futures-util = "0.3.26"
 grpcio = "0.12.0"
