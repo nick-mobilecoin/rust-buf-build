@@ -25,7 +25,7 @@ impl Greeter for GreeterService {
         resp.set_message(msg);
         let f = sink
             .success(resp)
-            .map_err(move |e| error!("failed to reply {:?}: {:?}", req, e))
+            .map_err(move |e| format!("failed to reply {:?}: {:?}", req, e))
             .map(|_| ());
         ctx.spawn(f)
     }
@@ -48,10 +48,10 @@ fn main() {
         .add_listening_port(addr, ServerCredentials::insecure())
         .unwrap();
     server.start();
-    info!("listening on {addr}");
+    println!("listening on {addr}");
     let (tx, rx) = oneshot::channel();
     thread::spawn(move || {
-        info!("Press ENTER to exit...");
+        println!("Press ENTER to exit...");
         let _ = io::stdin().read(&mut [0]).unwrap();
         tx.send(())
     });

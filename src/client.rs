@@ -15,5 +15,5 @@ fn main() {
     let mut req = HelloRequest::default();
     req.set_name("world".to_owned());
     let reply = client.say_hello(&req).expect("rpc");
-    info!("Greeter received: {}", reply.get_message());
+    println!("Greeter received: {}", reply.get_message());
 }
