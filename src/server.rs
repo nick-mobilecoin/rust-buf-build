@@ -12,17 +12,22 @@ use grpcio::{
     UnarySink,
 };
 
-// use grpcio_proto::example::helloworld::{HelloReply, HelloRequest};
-// use grpcio_proto::example::helloworld_grpc::{create_greeter, Greeter};
-use helloworld::{HelloReply, HelloRequest};
-use helloworld_grpc::{create_greeter, Greeter};
-include!(concat!(env!("OUT_DIR"), concat!("/gen/mod.rs")));
+pub mod attest {
+    pub mod v1 {
+        include!(concat!(env!("OUT_DIR"), concat!("/gen/attest.v1.rs")));
+    }
+}
+pub mod enclave {
+    pub mod v1 {
+        include!(concat!(env!("OUT_DIR"), concat!("/gen/enclave.v1.rs")));
+    }
+}
 
 #[derive(Clone)]
 struct GreeterService;
 
-impl Greeter for GreeterService {
-    fn say_hello(&mut self, ctx: RpcContext<'_>, req: HelloRequest, sink: UnarySink<HelloReply>) {
+impl EnclaveUnaryService for GreeterService {
+    fn actual(&mut self, ctx: RpcContext<'_>, req: ActualRequest, sink: UnarySink<ActualResponse>) {
         let msg = format!("Hello {}", req.get_name());
         let mut resp = HelloReply::default();
         resp.set_message(msg);
