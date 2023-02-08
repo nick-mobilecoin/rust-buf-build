@@ -1,12 +1,19 @@
 use tonic::{transport::Server, Request, Response, Status};
 
 
+pub mod attest {
+    pub mod v1 {
+        include!(concat!(env!("OUT_DIR"), concat!("/gen/attest.v1.rs")));
+    }
+}
 pub mod enclave {
-    include!(concat!(env!("OUT_DIR"), concat!("/gen/enclave.v1.rs")));
+    pub mod what {
+        include!(concat!(env!("OUT_DIR"), concat!("/gen/enclave.v1.rs")));
+    }
 }
 
-use enclave::{ActualRequest, ActualResponse};
-use crate::enclave::enclave_unary_service_server::{EnclaveUnaryService, EnclaveUnaryServiceServer};
+use enclave::what::{ActualRequest, ActualResponse};
+use crate::enclave::what::enclave_unary_service_server::{EnclaveUnaryService, EnclaveUnaryServiceServer};
 
 #[derive(Debug, Default)]
 pub struct MyGreeter {}
@@ -20,7 +27,7 @@ impl EnclaveUnaryService for MyGreeter {
         println!("Got a request: {:?}", request);
 
         let reply = ActualResponse {
-            stuff: format!("Hello {}!", request.into_inner().name).into(),
+            stuff: format!("Hello {}!", String::from_utf8(request.into_inner().stuff).unwrap()).into(),
         };
 
         Ok(Response::new(reply)) // Send back our formatted greeting

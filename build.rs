@@ -15,7 +15,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config_file = cwd.join("buf.gen.yaml");
 
     let mut cmd = Command::new("buf");
-    cmd.arg("generate").arg("buf.build/nick-mc/enclaveapis").arg("--template").arg(config_file);
+    cmd.arg("generate").arg("buf.build/nick-mc/enclaveapis").arg("--template").arg(&config_file);
+
+    // buf treats output in the `buf.gen.yaml` as relative to the cwd
+    cmd.current_dir(env::var("OUT_DIR").unwrap());
+    let _ = cmd.output().unwrap();
+
+    let mut cmd = Command::new("buf");
+    cmd.arg("generate").arg("buf.build/nick-mc/attestapis").arg("--template").arg(&config_file);
 
     // buf treats output in the `buf.gen.yaml` as relative to the cwd
     cmd.current_dir(env::var("OUT_DIR").unwrap());
