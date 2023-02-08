@@ -9,10 +9,10 @@ use grpcio::{ChannelBuilder, EnvBuilder};
 use helloworld::HelloRequest;
 use helloworld_grpc::GreeterClient;
 pub mod helloworld {
-    include!(concat!(env!("OUT_DIR"), concat!("/gen/helloworld.rs")));
+    include!(concat!(env!("OUT_DIR"), concat!("/helloworld.rs")));
 }
 pub mod helloworld_grpc {
-    include!(concat!(env!("OUT_DIR"), concat!("/gen/helloworld_grpc.rs")));
+    include!(concat!(env!("OUT_DIR"), concat!("/helloworld_grpc.rs")));
 }
 
 fn main() {
